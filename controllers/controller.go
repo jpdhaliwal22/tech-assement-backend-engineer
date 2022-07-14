@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
+	_ "encoding/json"
 	"fmt"
 	"log"
 	"net/http"
