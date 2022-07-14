@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/honestbank/tech-assignment-backend-engineer/manager"
 	"log"
 	"net/http"
 	"os"
@@ -12,10 +13,10 @@ import (
 
 	env "github.com/joho/godotenv"
 
-	"github.com/honestbank/tech_assignment_fullstack_engineer/controllers"
+	"github.com/honestbank/tech-assignment-backend-engineer/controllers"
 )
 
-const envFile = ".env"
+const envFile = "local.env"
 
 var loadEnv = env.Load
 
@@ -28,11 +29,14 @@ func run() (s *http.Server) {
 	if !exist {
 		log.Fatal("no port specified")
 	}
-	port = fmt.Sprintf(":%s", port)
+	port = fmt.Sprintf("localhost:%s", port)
+
+	mgr := manager.NewManager()
+	handler := controllers.NewController(context.TODO(), mgr)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/process", controllers.ProcessData)
-
+	mux.HandleFunc("/process", handler.ProcessData)
+	fmt.Println("port", port)
 	s = &http.Server{
 		Addr:           port,
 		ReadTimeout:    10 * time.Second,
